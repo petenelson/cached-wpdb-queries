@@ -1,8 +1,11 @@
 # Cached WordPress wpdb queries
 
 Specific queries in WordPress core are executed directly against the database (such as `get_available_post_mime_types()`) and currently
-do not have filters that allow bypassing the SQL query that is executed. On large installations with thousands of records in the wp_posts
-table, some of these queries can run quite slow. This plugin allows for caching of the results of these queries to improve performance.
+do not have filters that allow bypassing the SQL query that is executed. On large installations with tens of thousands of records in the wp_posts
+table, some of these queries can run quite slow. This plugin allows for "caching" of the results of these queries via records in the options table
+to improve performance.
+
+Note: Use this sparingly and only to cache wpdb queries that currently cannot be cached or bypassed by other means.
 
 ## How it works:
 
