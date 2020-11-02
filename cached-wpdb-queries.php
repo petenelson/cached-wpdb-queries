@@ -1,9 +1,14 @@
-<?php // phpcs:ignore
-/*
-Plugin Name: Cached WPDB Queries
-Description: Drop-in for caching specific wpdb queries via the options table.
-Author: Pete Nelson <a href="https://github.com/petenelson">GitHub</a>
-*/
+<?php
+/**
+ * Plugin Name: Cached WPDB Queries
+ * Description: Uses the options table for caching specific core wpdb queries.
+ * Version:     1.0.0
+ * Author:      Pete Nelson
+ * Author URI:  https://github.com/petenelson
+ * License:     GPLv2 or later
+ *
+ * @package WBDPCache
+ */
 
 namespace WBDPCache;
 
@@ -51,20 +56,20 @@ function get_cached_queries() {
 		// The original wpdb query that should be cached.
 		'original'             => "SELECT DISTINCT post_mime_type FROM $wpdb->posts WHERE post_type = 'attachment'",
 
-		// The new query that runs against the option table. These options should
-		// be created within the option_record_callback function.
-		'updated'              => "SELECT DISTINCT option_value FROM $wpdb->options WHERE option_name like 'cached_mime_type_%'",
-
-		// How long the query results should be cached for.
-		'expires'              => DAY_IN_SECONDS * 1,
-
 		// Where to get this data from if the query isn't cached.
 		'source_callback'      => '\get_available_post_mime_types',
+
+		// How long the query results should be cached for, in seconds.
+		'expires'              => DAY_IN_SECONDS * 1,
 
 		// The callback that creates the option record for each result from
 		// the source. Remember that each option name needs to be unique and
 		// is limited to 191 records.
 		'option_record_callback' => __NAMESPACE__ . '\create_cached_mime_types',
+
+		// The new query that runs against the option table. These options should
+		// be created within the option_record_callback function.
+		'updated'              => "SELECT DISTINCT option_value FROM $wpdb->options WHERE option_name like 'cached_mime_type_%'",
 	];
 
 	return apply_filters( 'cached_wpdb_queries_list', $queries );
