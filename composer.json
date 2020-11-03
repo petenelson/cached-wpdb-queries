@@ -1,0 +1,13 @@
+{
+    "name": "petenelson/cached-wpdb-queries",
+    "description": "Cached WPDB Queries",
+    "type": "wordpress-plugin",
+    "license": "GPLv2 or later",
+    "authors": [
+        {
+            "name": "Pete Nelson",
+            "email": "pete@petenelson.com"
+        }
+    ],
+    "require": {}
+}
