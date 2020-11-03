@@ -27,7 +27,6 @@ function setup() {
 	add_filter( 'cached_wpdb_queries_list', n( 'add_mime_type_query_data' ) );
 	add_filter( 'cached_wpdb_queries_should_rebuild', n( 'maybe_rebuild_cache' ) );
 }
-add_action( 'init', n( 'setup' ) );
 
 /**
  * Adds the MIME type query data.
@@ -41,7 +40,9 @@ function add_mime_type_query_data( $query_data ) {
 	if ( apply_filters( 'cache_get_available_post_mime_types', true ) ) {
 
 		$query_data[] = [
-			// The original wpdb query that should be cached.
+			// The original wpdb query that should be cached. This is currently
+			// hard-coded in get_available_post_mime_types() and cannot be
+			// overriden.
 			'original'                => "SELECT DISTINCT post_mime_type FROM $wpdb->posts WHERE post_type = 'attachment'",
 
 			// Where to get this data from if the query isn't cached.
@@ -89,7 +90,7 @@ function maybe_rebuild_cache( $rebuild ) {
 }
 
 /**
- * Creates database records.
+ * Creates options record (cached_mime_type_0, cached_mime_type_1, etc).
  *
  * @param  mixed $source_data The source data.
  * @param  array $query_data  The cachable query data.
