@@ -14,9 +14,9 @@ Note: Use this sparingly and only to cache wpdb queries that currently cannot be
 	* `original` The original wpdb query from WordPress core.
 	* `source_callback` that is used to get the data to be cached.
 	* `expires` in seconds for how long the results should be cached.
-	* `option_record_callback` used to create records in the option table. This function is passed the results from the source callback.
+	* `create_records_callback` used to create records in the option table. This function is passed the results from the source callback.
 	* `updated` The new query that will be used instead against the options table.
 
-See the `get_cached_queries()` function for an example. Basically it is taking the distint post_mime_type records for attachments, creating records
-in the options table with specific prefixes, then running a wildcard starts-with query against the options table, rather than the wp_posts table,
-to get the results.
+See the code in `get-available-post-mime-types.php` function for an example. Basically it is taking the distint post_mime_type records for attachments,
+creating records in the options table with specific prefixes, then running a wildcard starts-with query against the options table, rather than the wp_posts
+table, to get the results.

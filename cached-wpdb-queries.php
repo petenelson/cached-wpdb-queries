@@ -12,6 +12,12 @@
 
 namespace WBDPCache;
 
+if ( ! defined( 'CACHED_WPDB_QUERIES' ) ) {
+	define( 'CACHED_WPDB_QUERIES', trailingslashit( dirname( __FILE__ ) ) );
+}
+
+include_once CACHED_WPDB_QUERIES . 'get-available-post-mime-types.php';
+
 /**
  * Quickly provide a namespaced way to get functions.
  *
@@ -19,7 +25,7 @@ namespace WBDPCache;
  *
  * @return string
  */
-function n( string $function ): string {
+function n( $function ) {
 	return __NAMESPACE__ . "\\$function";
 }
 
@@ -48,31 +54,8 @@ function get_option_prefix() {
  * @return array
  */
 function get_cached_queries() {
-	global $wpdb;
-
-	$queries = [];
-
-	$queries[] = [
-		// The original wpdb query that should be cached.
-		'original'             => "SELECT DISTINCT post_mime_type FROM $wpdb->posts WHERE post_type = 'attachment'",
-
-		// Where to get this data from if the query isn't cached.
-		'source_callback'      => '\get_available_post_mime_types',
-
-		// How long the query results should be cached for, in seconds.
-		'expires'              => DAY_IN_SECONDS * 1,
-
-		// The callback that creates the option record for each result from
-		// the source. Remember that each option name needs to be unique and
-		// is limited to 191 records.
-		'option_record_callback' => __NAMESPACE__ . '\create_cached_mime_types',
-
-		// The new query that runs against the option table. These options should
-		// be created within the option_record_callback function.
-		'updated'              => "SELECT DISTINCT option_value FROM $wpdb->options WHERE option_name like 'cached_mime_type_%'",
-	];
-
-	return apply_filters( 'cached_wpdb_queries_list', $queries );
+	// See get-available-post-mime-types.php for an example.
+	return apply_filters( 'cached_wpdb_queries_list', [] );
 }
 
 /**
@@ -88,7 +71,7 @@ function update_query( $query ) {
 
 	foreach ( $queries as $query_data ) {
 
-		if ( $query_data['original'] === $query ) {
+		if ( isset( $query_data['original'] ) && $query_data['original'] === $query ) {
 
 			remove_filter( 'query', n( 'update_query' ) );
 
@@ -114,7 +97,11 @@ function update_query( $query ) {
 function maybe_update_cached_results( $query_data ) {
 
 	// Make sure we can actually run the callbacks.
-	if ( ! is_callable( $query_data['source_callback'] ) || ! is_callable( $query_data['option_record_callback'] ) ) {
+	if ( ! isset( $query_data['source_callback'] ) || ! isset( $query_data['create_records_callback'] ) ) {
+		return apply_filters( 'cached_wpdb_queries_use_updated_query', false, $query_data );
+	}
+
+	if ( ! is_callable( $query_data['source_callback'] ) || ! is_callable( $query_data['create_records_callback'] ) ) {
 		return apply_filters( 'cached_wpdb_queries_use_updated_query', false, $query_data );
 	}
 
@@ -155,46 +142,25 @@ function maybe_update_cached_results( $query_data ) {
 		// Get the source data.
 		$source_data = call_user_func( $query_data['source_callback'] );
 
-		// Pass it to whatever will build the options records.
-		call_user_func( $query_data['option_record_callback'], $source_data, $query_data );
+		// Pass the source data to whatever will build the new records.
+		$success = call_user_func( $query_data['create_records_callback'], $source_data, $query_data );
 
-		delete_option( $option_key );
+		if ( $success ) {
+			delete_option( $option_key );
 
-		$option_data = [
-			'created' => time(),
-			'expires' => time() + $query_data['expires'],
-		];
+			$option_data = [
+				'created' => time(),
+				'expires' => time() + $query_data['expires'],
+			];
 
-		// Store when this was cached.
-		add_option( $option_key, $option_data, '', 'no' );
+			// Store when this was cached.
+			add_option( $option_key, $option_data, '', 'no' );
 
-		$use_updated_query = true;
+			$use_updated_query = true;
+		}
 	}
 
 	$use_updated_query = apply_filters( 'cached_wpdb_queries_use_updated_query', $use_updated_query, $query_data );
 
 	return $use_updated_query;
-}
-
-/**
- * Creates an option record for cached MIME types.
- *
- * @param  mixed $source_data The source data.
- * @param  array $query_data  The cachable query data.
- * @return void
- */
-function create_cached_mime_types( $source_data, $query_data ) {
-	global $wpdb;
-
-	// Delete any existing options.
-	$option_names = $wpdb->get_col( "SELECT option_name FROM $wpdb->options WHERE option_name like 'cached_mime_type_%'" ); // phpcs:ignore
-
-	foreach ( $option_names as $option_name ) {
-		delete_option( $option_name );
-	}
-
-	// Now create the unique options.
-	foreach ( $source_data as $mime_type ) {
-		add_option( 'cached_mime_type_' . $mime_type, $mime_type, '', 'no' );
-	}
 }
