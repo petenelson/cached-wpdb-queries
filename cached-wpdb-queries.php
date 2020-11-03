@@ -5,10 +5,15 @@
  * Version:     1.0.0
  * Author:      Pete Nelson
  * Author URI:  https://github.com/petenelson
+ * Plugin URI:  https://github.com/petenelson/wp-rest-api-log
  * License:     GPLv2 or later
  *
  * @package WBDPCache
  */
+
+if ( ! defined( 'CACHED_WPDB_QUERIES_VERSION' ) ) {
+	define( 'CACHED_WPDB_QUERIES_VERSION', '1.0.0' );
+}
 
 if ( ! defined( 'CACHED_WPDB_QUERIES_INC' ) ) {
 	define( 'CACHED_WPDB_QUERIES_INC', trailingslashit( dirname( __FILE__ ) ) . 'include/' );

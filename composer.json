@@ -9,6 +9,6 @@
 			"email": "pete@petenelson.com"
 		}
 	],
-	"minimum-stability": "dev-trunk",
+	"minimum-stability": "dev",
 	"require": {}
 }
