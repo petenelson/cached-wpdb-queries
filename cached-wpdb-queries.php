@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Cached WPDB Queries
  * Description: Uses the options table for caching specific core wpdb queries.
- * Version:     1.0.0
+ * Version:     1.0.1
  * Author:      Pete Nelson
  * Author URI:  https://github.com/petenelson
  * Plugin URI:  https://github.com/petenelson/wp-rest-api-log
