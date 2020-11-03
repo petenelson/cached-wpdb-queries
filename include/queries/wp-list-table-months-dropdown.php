@@ -77,7 +77,7 @@ function add_months_dropdown_query_data( $query_data ) {
 			'create_records_callback' => n( 'create_cached_months' ),
 
 			// The new query that runs against the database.
-			'updated'                 => "SELECT SUBSTRING_INDEX(option_value, '_', 1) as year, SUBSTRING_INDEX(option_value, '_', -1) as month FROM $wpdb->options WHERE option_name like 'cached_month_dropdown_%' ORDER BY option_name",
+			'updated'                 => "SELECT SUBSTRING_INDEX(option_value, '_', 1) as year, SUBSTRING_INDEX(option_value, '_', -1) as month FROM $wpdb->options WHERE option_name like 'cached_attachments_month_dropdown_%' ORDER BY option_name",
 
 			// The callback that flushes all cached query results
 			'flush_callback'          => n( 'flush_cached_months' ),
@@ -121,7 +121,7 @@ function maybe_rebuild_cache( $rebuild ) {
 }
 
 /**
- * Creates options record (cached_month_dropdown_0, cached_month_dropdown_1, etc).
+ * Creates options record (cached_attachments_month_dropdown_0, cached_attachments_month_dropdown_1, etc).
  *
  * @param  mixed $source_data The source data.
  * @param  array $query_data  The cachable query data.
@@ -136,7 +136,7 @@ function create_cached_months( $source_data, $query_data ) {
 	// Now create the unique options.
 	foreach ( $source_data as $year_month ) {
 
-		$option_name  = 'cached_month_dropdown_' . str_pad( $i, 4, '0', STR_PAD_LEFT );
+		$option_name  = 'cached_attachments_month_dropdown_' . str_pad( $i, 4, '0', STR_PAD_LEFT );
 		$option_value = "{$year_month->year}_{$year_month->month}";
 
 		add_option( $option_name, $option_value, '', 'no' );
@@ -155,7 +155,7 @@ function flush_cached_months() {
 	global $wpdb;
 
 	// Delete any existing options.
-	$option_names = $wpdb->get_col( "SELECT option_name FROM $wpdb->options WHERE option_name like 'cached_month_dropdown_%'" ); // phpcs:ignore
+	$option_names = $wpdb->get_col( "SELECT option_name FROM $wpdb->options WHERE option_name like 'cached_attachments_month_dropdown_%'" ); // phpcs:ignore
 
 	foreach ( $option_names as $option_name ) {
 		delete_option( $option_name );
