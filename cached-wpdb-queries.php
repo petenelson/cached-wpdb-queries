@@ -21,7 +21,10 @@ if ( ! defined( 'CACHED_WPDB_QUERIES_INC' ) ) {
 
 include_once CACHED_WPDB_QUERIES_INC . 'core.php';
 include_once CACHED_WPDB_QUERIES_INC . 'queries/get-available-post-mime-types.php';
+include_once CACHED_WPDB_QUERIES_INC . 'queries/get-available-post-mime-types.php';
+include_once CACHED_WPDB_QUERIES_INC . 'queries/wp-list-table-months-dropdown.php';
 
 // Start up the plugin.
 WBDPCache\Core\setup();
 WBDPCache\GetAvailablePostMimeTypes\setup();
+WBDPCache\WPListTableMonthsDropdown\setup();

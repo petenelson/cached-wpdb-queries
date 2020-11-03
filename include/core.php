@@ -59,13 +59,15 @@ function update_wpdb_query( $query ) {
 
 	foreach ( $queries as $query_data ) {
 
-		if ( isset( $query_data['original'] ) && $query_data['original'] === $query ) {
+		if ( isset( $query_data['original'] ) && trim( normalize_whitespace( $query_data['original'] ) ) === trim( normalize_whitespace( $query ) ) ) {
 
 			remove_filter( 'query', n( 'update_wpdb_query' ) );
 
 			// If there are cached results built and usable, then we can use
 			// the query against the option table.
 			$use_updated_query = maybe_use_cached_results( $query_data );
+
+			add_filter( 'query', n( 'update_wpdb_query' ) );
 
 			if ( $use_updated_query ) {
 				return $query_data['updated'];
@@ -140,7 +142,7 @@ function maybe_use_cached_results( $query_data ) {
 			$option_data = [
 				'created'  => time(),
 				'expires'  => time() + $query_data['expires'],
-				'original' => $query_data['original'],
+				'original' => trim( $query_data['original'] ),
 			];
 
 			// Store when this was cached.
