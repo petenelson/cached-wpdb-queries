@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Cached WPDB Queries
  * Description: Uses the options table for caching specific core wpdb queries.
- * Version:     1.0.0
+ * Version:     1.0.1
  * Author:      Pete Nelson
  * Author URI:  https://github.com/petenelson
  * Plugin URI:  https://github.com/petenelson/wp-rest-api-log
@@ -21,7 +21,10 @@ if ( ! defined( 'CACHED_WPDB_QUERIES_INC' ) ) {
 
 include_once CACHED_WPDB_QUERIES_INC . 'core.php';
 include_once CACHED_WPDB_QUERIES_INC . 'queries/get-available-post-mime-types.php';
+include_once CACHED_WPDB_QUERIES_INC . 'queries/get-available-post-mime-types.php';
+include_once CACHED_WPDB_QUERIES_INC . 'queries/wp-list-table-months-dropdown.php';
 
 // Start up the plugin.
 WBDPCache\Core\setup();
 WBDPCache\GetAvailablePostMimeTypes\setup();
+WBDPCache\WPListTableMonthsDropdown\setup();
