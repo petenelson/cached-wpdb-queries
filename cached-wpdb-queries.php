@@ -5,7 +5,7 @@
  * Version:     1.0.1
  * Author:      Pete Nelson
  * Author URI:  https://github.com/petenelson
- * Plugin URI:  https://github.com/petenelson/wp-rest-api-log
+ * Plugin URI:  https://github.com/petenelson/cached-wpdb-queries
  * License:     GPLv2 or later
  *
  * @package WBDPCache
@@ -23,8 +23,10 @@ include_once CACHED_WPDB_QUERIES_INC . 'core.php';
 include_once CACHED_WPDB_QUERIES_INC . 'queries/get-available-post-mime-types.php';
 include_once CACHED_WPDB_QUERIES_INC . 'queries/get-available-post-mime-types.php';
 include_once CACHED_WPDB_QUERIES_INC . 'queries/wp-list-table-months-dropdown.php';
+include_once CACHED_WPDB_QUERIES_INC . 'queries/wp-ajax-query-attachments.php';
 
 // Start up the plugin.
 WBDPCache\Core\setup();
 WBDPCache\GetAvailablePostMimeTypes\setup();
 WBDPCache\WPListTableMonthsDropdown\setup();
+WBDPCache\WPAJAXQueryAttachments\setup();
